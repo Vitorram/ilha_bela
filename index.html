@@ -52,6 +52,11 @@
         button:hover {
             background: #135c04;
         }
+        .small-button {
+            width: 50px;
+            font-size: 14px;
+            padding: 5px;
+        }
         ul {
             list-style: none;
             padding: 0;
@@ -76,7 +81,7 @@
     <div class="container">
         <div class="header" onclick="toggleSection('casa')">Casa</div>
         <div class="content" id="casa">
-            <button onclick="adicionarItem('casa')">Adicionar casa</button>
+            <button onclick="adicionarCasa()">Adicionar casa</button>
             <ul id="lista-casa"></ul>
         </div>
     </div>
@@ -84,9 +89,10 @@
     <div class="container">
         <div class="header" onclick="toggleSection('churrasco')">Churrasco</div>
         <div class="content" id="churrasco">
-            <button onclick="adicionarItem('churrasco')">Adicionar item</button>
+            <button onclick="adicionarItem()">Adicionar Item</button>
             <ul id="lista-churrasco"></ul>
-            <h4>Total por pessoa: R$ <span id="valor-churrasco">0.00</span></h4>
+            <h4>Total: R$ <span id="total-churrasco">0.00</span></h4>
+            <h4>Valor por pessoa (7): R$ <span id="valor-por-pessoa">0.00</span></h4>
         </div>
     </div>
 
@@ -96,26 +102,51 @@
             section.style.display = section.style.display === "none" || section.style.display === "" ? "block" : "none";
         }
 
-        function adicionarItem(tipo) {
-            const nome = tipo === 'casa' ? 'Link da casa' : 'Nome do item';
-            const entrada = prompt(`Digite ${nome}:`);
-            const valor = parseFloat(prompt("Digite o valor:"));
-            if (entrada && !isNaN(valor)) {
+        function adicionarCasa() {
+            const link = prompt("Digite o link da casa:");
+            const valor = parseFloat(prompt("Digite o valor total da casa:"));
+            const usuario = prompt("Digite seu nome:");
+            if (link && !isNaN(valor) && usuario) {
                 const li = document.createElement("li");
-                li.innerHTML = `${entrada} - R$ ${valor.toFixed(2)}`;
-                document.getElementById(`lista-${tipo}`).appendChild(li);
-                if (tipo === 'churrasco') atualizarTotalChurrasco();
+                const button = document.createElement("button");
+                button.innerText = "Ver Casa";
+                button.onclick = function() {
+                    window.open(link, "_blank");
+                };
+
+                const valorTexto = document.createElement("h4");
+                valorTexto.innerText = `Valor por pessoa (7): R$ ${(valor / 7).toFixed(2)}`;
+                
+                const usuarioTexto = document.createElement("p");
+                usuarioTexto.innerText = `Casa colocada por: ${usuario}`;
+                
+                li.appendChild(button);
+                li.appendChild(valorTexto);
+                li.appendChild(usuarioTexto);
+                document.getElementById("lista-casa").appendChild(li);
             } else {
                 alert("Entrada inválida!");
             }
         }
 
-        function atualizarTotalChurrasco() {
-            let total = 0;
-            document.querySelectorAll("#lista-churrasco li").forEach(li => {
-                total += parseFloat(li.innerText.split('R$ ')[1]);
-            });
-            document.getElementById("valor-churrasco").innerText = (total / 7).toFixed(2);
+        function adicionarItem() {
+            const item = prompt("Digite o nome do item:");
+            const valor = parseFloat(prompt("Digite o valor do item:"));
+            if (item && !isNaN(valor)) {
+                const li = document.createElement("li");
+                li.innerText = `${item}: R$ ${valor.toFixed(2)}`;
+                document.getElementById("lista-churrasco").appendChild(li);
+                atualizarTotal(valor);
+            } else {
+                alert("Entrada inválida!");
+            }
+        }
+
+        function atualizarTotal(valor) {
+            let total = parseFloat(document.getElementById("total-churrasco").innerText);
+            total += valor;
+            document.getElementById("total-churrasco").innerText = total.toFixed(2);
+            document.getElementById("valor-por-pessoa").innerText = (total / 7).toFixed(2);
         }
     </script>
 </body>
