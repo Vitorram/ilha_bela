@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "@prisma/client": "^6.5.0",
+    "express": "^5.1.0"
+  },
+  "name": "ilha_bela",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "prisma": "^6.5.0"
+  }
+}

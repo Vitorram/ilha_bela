@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casa e Churrasco</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #000000;
+        }
+        .container {
+            width: 90%;
+            max-width: 400px;
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .header {
+            background: #053809;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .content {
+            display: none;
+            margin-top: 10px;
+        }
+        button {
+            padding: 5px 10px;
+            background: #000000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #135c04;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 10px;
+        }
+        li {
+            background: #f9f9f9;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            text-align: center;
+            position: relative;
+        }
+        h4, p {
+            margin-top: 5px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header" onclick="toggleSection('casa')">Casa</div>
+        <div class="content" id="casa">
+            <button onclick="adicionarItem('casa')">Adicionar casa</button>
+            <ul id="lista-casa"></ul>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header" onclick="toggleSection('churrasco')">Churrasco</div>
+        <div class="content" id="churrasco">
+            <button onclick="adicionarItem('churrasco')">Adicionar item</button>
+            <ul id="lista-churrasco"></ul>
+            <h4>Total por pessoa: R$ <span id="valor-churrasco">0.00</span></h4>
+        </div>
+    </div>
+
+    <script>
+        function toggleSection(id) {
+            const section = document.getElementById(id);
+            section.style.display = section.style.display === "none" || section.style.display === "" ? "block" : "none";
+        }
+
+        function adicionarItem(tipo) {
+            const nome = tipo === 'casa' ? 'Link da casa' : 'Nome do item';
+            const entrada = prompt(`Digite ${nome}:`);
+            const valor = parseFloat(prompt("Digite o valor:"));
+            if (entrada && !isNaN(valor)) {
+                const li = document.createElement("li");
+                li.innerHTML = `${entrada} - R$ ${valor.toFixed(2)}`;
+                document.getElementById(`lista-${tipo}`).appendChild(li);
+                if (tipo === 'churrasco') atualizarTotalChurrasco();
+            } else {
+                alert("Entrada inválida!");
+            }
+        }
+
+        function atualizarTotalChurrasco() {
+            let total = 0;
+            document.querySelectorAll("#lista-churrasco li").forEach(li => {
+                total += parseFloat(li.innerText.split('R$ ')[1]);
+            });
+            document.getElementById("valor-churrasco").innerText = (total / 7).toFixed(2);
+        }
+    </script>
+</body>
+</html>
