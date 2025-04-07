@@ -1,6 +1,6 @@
 import express from 'express';
 
-//import userRouter from './routers/userRouter.js';
+
 import ilhaBelaRouter from './routers/ilhaBelaRouter.js';
 
 const app = express();
