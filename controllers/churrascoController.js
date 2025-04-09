@@ -1,5 +1,5 @@
 import fs from 'fs';
-const path = './dados/churrasco.json';
+const path = './dados.json';
 
 export function getChurrasco(req, res) {
   const dados = JSON.parse(fs.readFileSync(path));

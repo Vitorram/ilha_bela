@@ -164,7 +164,7 @@
 
             if (link && !isNaN(valor) && usuario) {
                 const casa = { link, valor, usuario };
-                await fetch('http://localhost:3000/casa', {
+                await fetch('http://localhost:3000/casas', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(casa)

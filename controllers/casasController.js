@@ -1,5 +1,5 @@
 import fs from 'fs';
-const path = './dados/casas.json';
+const path = './dados.json';
 
 export function getCasas(req, res) {
   const dados = JSON.parse(fs.readFileSync(path));
