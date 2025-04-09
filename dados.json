@@ -1,9 +1,14 @@
 {
   "casas": [
     {
-      "link": "https://www.airbnb.com.br/rooms/858706085482905941?category_tag=Tag%3A5348&search_mode=flex_destinations_search&adults=1&check_in=2025-04-09&check_out=2025-04-14&children=0&infants=0&pets=0&photo_id=1617561164&source_impression_id=p3_1744229724_P3w_PxfdrevN4Me6&previous_page_section_name=1000&federated_search_id=92b2bc70-c774-4da2-a883-fa184c99de80",
-      "valor": 1200,
-      "usuario": "vitor"
+      "link": "'http://localhost:3000/casas'",
+      "valor": 111,
+      "usuario": "biot"
+    },
+    {
+      "link": "'http://localhost:3000/casas''http://localhost:3000/casas'",
+      "valor": 1222,
+      "usuario": "ssd"
     }
   ],
   "churrasco": []
