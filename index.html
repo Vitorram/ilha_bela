@@ -199,7 +199,6 @@
         }
 
         function atualizarValores() {
-            // Atualiza casas
             const listaCasa = document.getElementById("lista-casa").children;
             Array.from(listaCasa).forEach(li => {
                 const valorTexto = li.querySelector("h4");
@@ -207,7 +206,6 @@
                 valorTexto.innerText = `Valor por pessoa (${quantidadePessoas}): R$ ${(total / quantidadePessoas).toFixed(2)}`;
             });
 
-            // Atualiza churrasco
             const total = parseFloat(document.getElementById("total-churrasco").innerText);
             document.getElementById("valor-por-pessoa").innerText = (total / quantidadePessoas).toFixed(2);
         }
@@ -216,7 +214,7 @@
             const res = await fetch('http://localhost:3000/dados');
             const dados = await res.json();
 
-            dados.casas.forEach(casa => {
+            dados.casas.forEach((casa, index) => {
                 const li = document.createElement("li");
 
                 const button = document.createElement("button");
@@ -230,9 +228,49 @@
                 const usuarioTexto = document.createElement("p");
                 usuarioTexto.innerText = `Casa colocada por: ${casa.usuario}`;
 
+                const acoes = document.createElement("div");
+                acoes.classList.add("acoes");
+
+                const btnEditar = document.createElement("button");
+                btnEditar.innerText = "Editar";
+                btnEditar.onclick = async () => {
+                    const novoLink = prompt("Novo link da casa:", casa.link);
+                    const novoValor = parseFloat(prompt("Novo valor da casa:", casa.valor));
+                    const novoUsuario = prompt("Nome do usuário:", casa.usuario);
+
+                    if (novoLink && !isNaN(novoValor) && novoUsuario) {
+                        dados.casas[index] = { link: novoLink, valor: novoValor, usuario: novoUsuario };
+                        await fetch('https://ilha-bela.onrender.com', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(dados.casas[index])
+                        });
+                        location.reload();
+                    }
+                };
+
+                const btnRemover = document.createElement("button");
+                btnRemover.innerText = "Remover";
+                btnRemover.onclick = async () => {
+                    if (confirm("Tem certeza que deseja remover esta casa?")) {
+                        dados.casas.splice(index, 1);
+                        await fetch('http://localhost:3000/dados', {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(dados)
+                        });
+                        location.reload();
+                    }
+                };
+
+                acoes.appendChild(btnEditar);
+                acoes.appendChild(btnRemover);
+
                 li.appendChild(button);
                 li.appendChild(valorTexto);
                 li.appendChild(usuarioTexto);
+                li.appendChild(acoes);
+
                 document.getElementById("lista-casa").appendChild(li);
             });
 
