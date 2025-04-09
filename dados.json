@@ -1,15 +1,5 @@
 {
   "casas": [
-    {
-      "link": "'http://localhost:3000/casas'",
-      "valor": 111,
-      "usuario": "biot"
-    },
-    {
-      "link": "'http://localhost:3000/casas''http://localhost:3000/casas'",
-      "valor": 1222,
-      "usuario": "ssd"
-    }
   ],
   "churrasco": []
 }
