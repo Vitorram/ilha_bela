@@ -111,185 +111,194 @@
 </head>
 <body>
 
-    <div class="container">
-        <div class="header" onclick="toggleSection('pessoas')">Participantes</div>
-        <div class="content" id="pessoas">
-            <button onclick="definirPessoas()">Definir número de pessoas</button>
-            <h4>Quantidade de pessoas: <span id="quantidade-pessoas">7</span></h4>
-        </div>
+<div class="container">
+    <div class="header" onclick="toggleSection('pessoas')">Participantes</div>
+    <div class="content" id="pessoas">
+        <button onclick="definirPessoas()">Definir número de pessoas</button>
+        <h4>Quantidade de pessoas: <span id="quantidade-pessoas">7</span></h4>
     </div>
+</div>
 
-    <div class="container">
-        <div class="header" onclick="toggleSection('casa')">Casa</div>
-        <div class="content" id="casa">
-            <button onclick="adicionarCasa()">Adicionar casa</button>
-            <ul id="lista-casa"></ul>
-        </div>
+<div class="container">
+    <div class="header" onclick="toggleSection('casa')">Casa</div>
+    <div class="content" id="casa">
+        <button onclick="adicionarCasa()">Adicionar casa</button>
+        <ul id="lista-casa"></ul>
     </div>
+</div>
 
-    <div class="container">
-        <div class="header" onclick="toggleSection('churrasco')">Churrasco</div>
-        <div class="content" id="churrasco">
-            <button onclick="adicionarItem()">Adicionar Item</button>
-            <ul id="lista-churrasco"></ul>
-            <h4>Total: R$ <span id="total-churrasco">0.00</span></h4>
-            <h4>Valor por pessoa (<span id="quantidade-pessoas-2">7</span>): R$ <span id="valor-por-pessoa">0.00</span></h4>
-        </div>
+<div class="container">
+    <div class="header" onclick="toggleSection('churrasco')">Churrasco</div>
+    <div class="content" id="churrasco">
+        <button onclick="adicionarItem()">Adicionar Item</button>
+        <ul id="lista-churrasco"></ul>
+        <h4>Total: R$ <span id="total-churrasco">0.00</span></h4>
+        <h4>Valor por pessoa (<span id="quantidade-pessoas-2">7</span>): R$ <span id="valor-por-pessoa">0.00</span></h4>
     </div>
+</div>
 
-    <script>
-        const API_URL = 'https://ilha-bela.onrender.com';
-        let quantidadePessoas = 7;
-    
-        function toggleSection(id) {
-            const section = document.getElementById(id);
-            section.style.display = section.style.display === "none" || section.style.display === "" ? "block" : "none";
+<script>
+    const API_URL = 'https://ilha-bela.onrender.com';
+    let quantidadePessoas = 7;
+
+    function toggleSection(id) {
+        const section = document.getElementById(id);
+        section.style.display = section.style.display === "none" || section.style.display === "" ? "block" : "none";
+    }
+
+    function definirPessoas() {
+        const novaQuantidade = parseInt(prompt("Digite a quantidade de pessoas:"));
+        if (!isNaN(novaQuantidade) && novaQuantidade > 0) {
+            quantidadePessoas = novaQuantidade;
+            document.getElementById("quantidade-pessoas").innerText = quantidadePessoas;
+            document.getElementById("quantidade-pessoas-2").innerText = quantidadePessoas;
+            atualizarValores();
+        } else {
+            alert("Quantidade inválida!");
         }
-    
-        function definirPessoas() {
-            const novaQuantidade = parseInt(prompt("Digite a quantidade de pessoas:"));
-            if (!isNaN(novaQuantidade) && novaQuantidade > 0) {
-                quantidadePessoas = novaQuantidade;
-                document.getElementById("quantidade-pessoas").innerText = quantidadePessoas;
-                document.getElementById("quantidade-pessoas-2").innerText = quantidadePessoas;
-                atualizarValores();
-            } else {
-                alert("Quantidade inválida!");
-            }
-        }
-    
-        async function adicionarCasa() {
-            const link = prompt("Digite o link da casa:");
-            const valor = parseFloat(prompt("Digite o valor total da casa:"));
-            const usuario = prompt("Digite seu nome:");
-    
-            if (link && !isNaN(valor) && usuario) {
-                const casa = { link, valor, usuario };
-                await fetch(`${API_URL}/casas`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(casa)
-                });
-                location.reload();
-            } else {
-                alert("Entrada inválida!");
-            }
-        }
-    
-        async function adicionarItem() {
-            const nome = prompt("Digite o nome do item:");
-            const valor = parseFloat(prompt("Digite o valor do item:"));
-            if (nome && !isNaN(valor)) {
-                const item = { nome, valor };
-                await fetch(`${API_URL}/churrasco`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(item)
-                });
-                location.reload();
-            } else {
-                alert("Entrada inválida!");
-            }
-        }
-    
-        function atualizarValores() {
-            const listaCasa = document.getElementById("lista-casa").children;
-            Array.from(listaCasa).forEach(li => {
-                const valorTexto = li.querySelector("h4");
-                const total = parseFloat(valorTexto.dataset.total);
-                valorTexto.innerText = `Valor por pessoa (${quantidadePessoas}): R$ ${(total / quantidadePessoas).toFixed(2)}`;
+    }
+
+    async function adicionarCasa() {
+        const link = prompt("Digite o link da casa:");
+        const valor = parseFloat(prompt("Digite o valor total da casa:"));
+        const usuario = prompt("Digite seu nome:");
+
+        if (link && !isNaN(valor) && usuario) {
+            const casa = { link, valor, usuario };
+            await fetch(`${API_URL}/casas`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(casa)
             });
-    
-            const total = parseFloat(document.getElementById("total-churrasco").innerText);
-            document.getElementById("valor-por-pessoa").innerText = (total / quantidadePessoas).toFixed(2);
+            location.reload();
+        } else {
+            alert("Entrada inválida!");
         }
-    
-        window.onload = async function () {
-            const res = await fetch(`${API_URL}/dados`);
-            const dados = await res.json();
-    
-            // Casas
-            dados.casas.forEach((casa, index) => {
-                const li = document.createElement("li");
-    
-                const button = document.createElement("button");
-                button.innerText = "Ver Casa";
-                button.onclick = () => window.open(casa.link, "_blank");
-    
-                const valorTexto = document.createElement("h4");
-                valorTexto.innerText = `Valor por pessoa (${quantidadePessoas}): R$ ${(casa.valor / quantidadePessoas).toFixed(2)}`;
-                valorTexto.dataset.total = casa.valor;
-    
-                const usuarioTexto = document.createElement("p");
-                usuarioTexto.innerText = `Casa colocada por: ${casa.usuario}`;
-    
-                const acoes = document.createElement("div");
-                acoes.classList.add("acoes");
-    
-                const btnEditar = document.createElement("button");
-                btnEditar.innerText = "Editar";
-                btnEditar.onclick = async () => {
-                    const novoLink = prompt("Novo link da casa:", casa.link);
-                    const novoValor = parseFloat(prompt("Novo valor da casa:", casa.valor));
-                    const novoUsuario = prompt("Nome do usuário:", casa.usuario);
-    
-                    if (novoLink && !isNaN(novoValor) && novoUsuario) {
-                        const atualizado = { link: novoLink, valor: novoValor, usuario: novoUsuario };
-                        await fetch(`${API_URL}/dados`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(atualizado)
-                        });
-                        location.reload();
-                    }
-                };
-    
-                const btnRemover = document.createElement("button");
-                btnRemover.innerText = "Remover";
-                btnRemover.onclick = async () => {
-                    if (confirm("Tem certeza que deseja remover esta casa?")) {
-                        // Aqui simplificamos para deletar tudo e reescrever
-                        dados.casas.splice(index, 1);
-                        await fetch(`${API_URL}/dados`, {
-                            method: 'PUT',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ casas: dados.casas, churrasco: dados.churrasco })
-                        });
-                        location.reload();
-                    }
-                };
-    
-                acoes.appendChild(btnEditar);
-                acoes.appendChild(btnRemover);
-    
-                li.appendChild(button);
-                li.appendChild(valorTexto);
-                li.appendChild(usuarioTexto);
-                li.appendChild(acoes);
-    
-                document.getElementById("lista-casa").appendChild(li);
+    }
+
+    async function adicionarItem() {
+        const nome = prompt("Digite o nome do item:");
+        const valor = parseFloat(prompt("Digite o valor do item:"));
+        if (nome && !isNaN(valor)) {
+            const item = { nome, valor };
+            await fetch(`${API_URL}/churrasco`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(item)
             });
-    
-            // Itens do churrasco
-            let totalChurrasco = 0;
-    
-            dados.churrasco.forEach(item => {
-                const li = document.createElement("li");
-    
-                const texto = document.createElement("span");
-                texto.innerText = `${item.nome}: R$ ${item.valor.toFixed(2)}`;
-                texto.dataset.valor = item.valor;
-    
-                li.appendChild(texto);
-                document.getElementById("lista-churrasco").appendChild(li);
-    
-                totalChurrasco += item.valor;
-            });
-    
-            document.getElementById("total-churrasco").innerText = totalChurrasco.toFixed(2);
-            document.getElementById("valor-por-pessoa").innerText = (totalChurrasco / quantidadePessoas).toFixed(2);
-        };
-    </script>
-    
+            location.reload();
+        } else {
+            alert("Entrada inválida!");
+        }
+    }
+
+    function atualizarValores() {
+        const listaCasa = document.getElementById("lista-casa").children;
+        Array.from(listaCasa).forEach(li => {
+            const valorTexto = li.querySelector("h4");
+            const total = parseFloat(valorTexto.dataset.total);
+            valorTexto.innerText = `Valor por pessoa (${quantidadePessoas}): R$ ${(total / quantidadePessoas).toFixed(2)}`;
+        });
+
+        const total = parseFloat(document.getElementById("total-churrasco").innerText);
+        document.getElementById("valor-por-pessoa").innerText = (total / quantidadePessoas).toFixed(2);
+    }
+
+    window.onload = async function () {
+        const res = await fetch(`${API_URL}/dados`);
+        const dados = await res.json();
+
+        // Casas
+        dados.casas.forEach((casa) => {
+            const li = document.createElement("li");
+
+            const button = document.createElement("button");
+            button.innerText = "Ver Casa";
+            button.onclick = () => window.open(casa.link, "_blank");
+
+            const valorTexto = document.createElement("h4");
+            valorTexto.innerText = `Valor por pessoa (${quantidadePessoas}): R$ ${(casa.valor / quantidadePessoas).toFixed(2)}`;
+            valorTexto.dataset.total = casa.valor;
+
+            const usuarioTexto = document.createElement("p");
+            usuarioTexto.innerText = `Casa colocada por: ${casa.usuario}`;
+
+            const acoes = document.createElement("div");
+            acoes.classList.add("acoes");
+
+            const btnEditar = document.createElement("button");
+            btnEditar.innerText = "Editar";
+            btnEditar.onclick = async () => {
+                const novoLink = prompt("Novo link da casa:", casa.link);
+                const novoValor = parseFloat(prompt("Novo valor da casa:", casa.valor));
+                const novoUsuario = prompt("Nome do usuário:", casa.usuario);
+
+                if (novoLink && !isNaN(novoValor) && novoUsuario) {
+                    const atualizado = { link: novoLink, valor: novoValor, usuario: novoUsuario };
+                    await fetch(`${API_URL}/casas/${casa.id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(atualizado)
+                    });
+                    location.reload();
+                }
+            };
+
+            const btnRemover = document.createElement("button");
+            btnRemover.innerText = "Remover";
+            btnRemover.onclick = async () => {
+                if (confirm("Tem certeza que deseja remover esta casa?")) {
+                    await fetch(`${API_URL}/casas/${casa.id}`, {
+                        method: 'DELETE'
+                    });
+                    location.reload();
+                }
+            };
+
+            acoes.appendChild(btnEditar);
+            acoes.appendChild(btnRemover);
+
+            li.appendChild(button);
+            li.appendChild(valorTexto);
+            li.appendChild(usuarioTexto);
+            li.appendChild(acoes);
+
+            document.getElementById("lista-casa").appendChild(li);
+        });
+
+        // Itens do churrasco
+        let totalChurrasco = 0;
+
+        dados.churrasco.forEach(item => {
+            const li = document.createElement("li");
+
+            const texto = document.createElement("span");
+            texto.innerText = `${item.nome}: R$ ${item.valor.toFixed(2)}`;
+            texto.dataset.valor = item.valor;
+
+            const btnExcluirItem = document.createElement("button");
+            btnExcluirItem.innerText = "Remover";
+            btnExcluirItem.style.marginTop = '8px';
+            btnExcluirItem.onclick = async () => {
+                if (confirm(`Remover o item "${item.nome}"?`)) {
+                    await fetch(`${API_URL}/churrasco/${item.id}`, {
+                        method: 'DELETE'
+                    });
+                    location.reload();
+                }
+            };
+
+            li.appendChild(texto);
+            li.appendChild(btnExcluirItem);
+            document.getElementById("lista-churrasco").appendChild(li);
+
+            totalChurrasco += item.valor;
+        });
+
+        document.getElementById("total-churrasco").innerText = totalChurrasco.toFixed(2);
+        document.getElementById("valor-por-pessoa").innerText = (totalChurrasco / quantidadePessoas).toFixed(2);
+    };
+</script>
+
 </body>
 </html>
